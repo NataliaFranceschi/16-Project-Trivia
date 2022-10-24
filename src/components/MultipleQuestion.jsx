@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { BsFillCheckCircleFill,
+  BsFillXCircleFill } from 'react-icons/bs';
+import { IoIosTimer } from 'react-icons/io';
 import { addScore } from '../redux/actions';
 import shuffle from '../services/shuffle';
-import '../styles/questions.css';
 
 class MultipleQuestion extends Component {
   constructor() {
@@ -53,14 +55,14 @@ class MultipleQuestion extends Component {
   }
 
   componentDidUpdate() {
-    const { time, correctAnswer } = this.state;
+    const { time } = this.state;
     const { onAnswer } = this.props;
     const { intervalId } = this;
     if (time === 0) {
       onAnswer();
       this.setState({
         isClicked: true,
-        time: `Correct Answer: ${correctAnswer}` }, () => {
+        time: '0' }, () => {
         clearInterval(intervalId);
       });
     }
@@ -68,13 +70,12 @@ class MultipleQuestion extends Component {
 
   toggleClicked = (event) => {
     const { onAnswer, dispatch } = this.props;
-    const { correctAnswer } = this.state;
     onAnswer();
     this.setState({
       isClicked: true }, () => {
       clearInterval(this.intervalId);
-      const { className } = event.target;
-      if (className === 'correct-answer') {
+      const { id } = event.target;
+      if (id === 'correct-answer') {
         const { time, multiple } = this.state;
         const { gravatarEmail, name, assertions, score } = this.props;
         const MULTIPLIER = 10;
@@ -88,9 +89,6 @@ class MultipleQuestion extends Component {
           assertions: assertions + 1,
         };
         dispatch(addScore(dispatchObj));
-        this.setState({ status: 'Correct!', time: `Correct Answer: ${correctAnswer}` });
-      } else {
-        this.setState({ status: 'Wrong!', time: `Correct Answer: ${correctAnswer}` });
       }
     });
   };
@@ -101,34 +99,48 @@ class MultipleQuestion extends Component {
       questionText,
       suffledAnswers,
       correctAnswer,
-      status,
       incorrectAnswers,
       isClicked,
       time } = this.state;
-    const style = {
-      borderStyle: 'solid',
-    };
+    const { onClick, display } = this.props;
     return (
-      <div>
-        <h1>{ time }</h1>
-        <p>{ status }</p>
-        <h1 data-testid="question-category">{category}</h1>
-        <h2 data-testid="question-text">{questionText}</h2>
-        <h3 data-testid="question-difficulty">{difficulty}</h3>
-        <div data-testid="answer-options">
+      <div className="game">
+        <div className="question">
+          <div className="box">
+            <h1
+              className="category"
+              data-testid="question-category"
+            >
+              {category.toUpperCase()}
+
+            </h1>
+            <span />
+            <h2 data-testid="question-text">
+              {`${questionText
+                .replaceAll('&quot;', '\'\'').replaceAll('&#039;', '\'')} 
+                (${difficulty})`}
+            </h2>
+            <p className="clock">
+              <IoIosTimer />
+              { `Time: ${time}s` }
+            </p>
+          </div>
+        </div>
+        <div className="answer-options" data-testid="answer-options">
           {suffledAnswers.map((answer, index) => {
             if (answer === correctAnswer) {
               return (
                 <button
                   type="button"
                   data-testid="correct-answer"
-                  className="correct-answer"
+                  className="button is-rounded"
+                  id={ isClicked ? 'correct-answer' : null }
                   key={ index }
-                  style={ isClicked ? style : null }
                   onClick={ this.toggleClicked }
                   disabled={ isClicked }
                 >
-                  {answer}
+                  {isClicked && <BsFillCheckCircleFill className="correct" />}
+                  {answer.replaceAll('&quot;', '\'\'').replaceAll('&#039;', '\'')}
                 </button>
               );
             }
@@ -137,16 +149,27 @@ class MultipleQuestion extends Component {
               <button
                 type="button"
                 data-testid={ `wrong-answer-${i}` }
-                className="wrong-answer"
+                className="button is-rounded"
+                id={ isClicked ? 'wrong-answer' : null }
                 key={ index }
-                style={ isClicked ? style : null }
                 onClick={ this.toggleClicked }
                 disabled={ isClicked }
               >
-                {answer}
+                {isClicked && <BsFillXCircleFill className="wrong" />}
+                {answer.replaceAll('&quot;', '\'\'').replaceAll('&#039;', '\'')}
               </button>
             );
           })}
+          {display ? (
+            <button
+              className="next button is-primary"
+              type="button"
+              onClick={ onClick }
+              data-testid="btn-next"
+            >
+              Next
+            </button>)
+            : null}
         </div>
       </div>
     );
@@ -167,6 +190,8 @@ MultipleQuestion.propTypes = {
   assertions: PropTypes.number.isRequired,
   dispatch: PropTypes.func.isRequired,
   score: PropTypes.number.isRequired,
+  display: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

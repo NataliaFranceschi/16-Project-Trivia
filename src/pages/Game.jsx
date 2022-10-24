@@ -6,6 +6,7 @@ import Loading from '../components/Loading';
 import MultipleQuestion from '../components/MultipleQuestion';
 import Header from '../components/Header';
 import { saveRanking } from '../services/localstorage';
+import '../styles/game.scss';
 
 class Game extends Component {
   constructor() {
@@ -22,8 +23,9 @@ class Game extends Component {
   }
 
   async componentDidMount() {
+    const { category, type, difficulty } = this.props;
     const token = localStorage.getItem('token');
-    const questions = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
+    const questions = await fetch(`https://opentdb.com/api.php?amount=5&category=${category}&difficulty=${difficulty}&type=${type}&token=${token}`);
     const questionsJson = await questions.json();
     if (questionsJson.response_code === 0) {
       this.setState({
@@ -37,7 +39,7 @@ class Game extends Component {
   }
 
   onAnswer() {
-    this.setState({ display: 'inline' });
+    this.setState({ display: true });
   }
 
   onClick() {
@@ -71,19 +73,14 @@ class Game extends Component {
     if (loading) return <Loading />;
     const question = questions[count];
     return (
-      <div>
+      <div className="gamePage">
         <Header />
-        <MultipleQuestion question={ question } onAnswer={ this.onAnswer } />
-        {display ? (
-          <button
-            type="button"
-            onClick={ this.onClick }
-            data-testid="btn-next"
-            display={ display }
-          >
-            Next
-          </button>)
-          : null}
+        <MultipleQuestion
+          question={ question }
+          onAnswer={ this.onAnswer }
+          display={ display }
+          onClick={ this.onClick }
+        />
       </div>
 
     );
@@ -98,6 +95,9 @@ Game.propTypes = {
   name: PropTypes.string.isRequired,
   assertions: PropTypes.number.isRequired,
   score: PropTypes.number.isRequired,
+  category: PropTypes.string.isRequired,
+  difficulty: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -105,6 +105,9 @@ const mapStateToProps = (state) => ({
   name: state.player.name,
   assertions: state.player.assertions,
   score: state.player.score,
+  category: state.settingGame.category,
+  difficulty: state.settingGame.difficulty,
+  type: state.settingGame.type,
 });
 
 export default connect(mapStateToProps, null)(Game);

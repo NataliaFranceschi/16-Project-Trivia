@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import md5 from 'crypto-js/md5';
+import { IoMdSettings } from 'react-icons/io';
+import { Link } from 'react-router-dom';
 import { userLogin } from '../redux/actions';
+import logo from '../logoTrivia.svg';
+import '../styles/login.scss';
 
 class Login extends Component {
   constructor() {
@@ -57,30 +60,29 @@ class Login extends Component {
   render() {
     const { isDisabled } = this.state;
     return (
-      <div>
-        <h1>Login</h1>
+      <div className="login">
+        <img src={ logo } alt="logo" />
         <form>
-          <label htmlFor="gravatarEmail">
-            Email:
-            <input
-              type="email"
-              name="gravatarEmail"
-              id="gravatarEmail"
-              data-testid="input-gravatar-email"
-              onChange={ this.handleChange }
-            />
-          </label>
-          <label htmlFor="name">
-            Name:
-            <input
-              type="text"
-              name="name"
-              id="name"
-              data-testid="input-player-name"
-              onChange={ this.handleChange }
-            />
-          </label>
+          <input
+            className="input is-normal"
+            placeholder="Nome"
+            type="text"
+            name="name"
+            id="name"
+            data-testid="input-player-name"
+            onChange={ this.handleChange }
+          />
+          <input
+            className="input is-normal"
+            placeholder="E-mail"
+            type="email"
+            name="gravatarEmail"
+            id="gravatarEmail"
+            data-testid="input-gravatar-email"
+            onChange={ this.handleChange }
+          />
           <button
+            className="button is-primary"
             type="submit"
             data-testid="btn-play"
             disabled={ isDisabled }
@@ -88,18 +90,10 @@ class Login extends Component {
           >
             Play
           </button>
-          <button
-            data-testid="btn-settings"
-            type="button"
-            onClick={ () => {
-              const { history } = this.props;
-              history.push('/settings');
-            } }
-          >
-            Settings
-
-          </button>
         </form>
+        <Link to="/setting">
+          <IoMdSettings className="settingIcon" />
+        </Link>
       </div>
     );
   }
