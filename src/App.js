@@ -4,8 +4,9 @@ import Login from './pages/Login';
 import Game from './pages/Game';
 import Feedback from './pages/Feedback';
 import Ranking from './pages/Ranking';
-import Settings from './pages/Settings';
+import Setting from './pages/Setting';
 import './App.css';
+import 'bulma/css/bulma.min.css';
 
 export default function App() {
   return (
@@ -14,7 +15,7 @@ export default function App() {
       <Route path="/game" component={ Game } />
       <Route path="/feedback" component={ Feedback } />
       <Route path="/ranking" component={ Ranking } />
-      <Route path="/settings" component={ Settings } />
+      <Route path="/setting" component={ Setting } />
     </Switch>
   );
 }
