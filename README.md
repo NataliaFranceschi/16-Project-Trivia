@@ -4,4 +4,8 @@ Projeto desenvolvido em grupo no curso da Trybe no bloco 16 do Módulo 2 - Desen
 O objetivo do projeto Trivia foi o desenvolvimento de um jogo de perguntas e respostas, o qual é possível configurá-lo pela categoria, dificuldade e tipo de pergunta.<br>
 O jogo consiste em 5 perguntas, com 30 segundos para responder cada uma. Caso correta a resposta, a pontuação é baseada no tempo em que levou para responder e na dificuldade da pergunta.<br><br>
 Tecnologias utilizadas: React, Redux, React Testing Library, JavaScript.<br>
+A estilização foi realizada individualmente e para isso foi utilizado o framework Bulma.
+
+Veja o resultado: https://nataliafranceschi.github.io/16-Project-Trivia/
+
 ![trivia](Trivia.gif)
